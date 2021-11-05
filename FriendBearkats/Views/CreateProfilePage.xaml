@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewmodels="clr-namespace:FriendBearkats.ViewModels" x:DataType="viewmodels:CreatePageViewModel"
+             x:Class="FriendBearkats.Views.CreateProfilePage"
+             Title="Create">
+    <StackLayout Margin="20,35,20,20" BackgroundColor="Orange">
+        <Label Text="EMAIL ENTRY" TextColor="Black"/>
+        <Entry x:Name="EmailEntry" Text="{Binding EmailEntry}"      
+               Placeholder="Enter email"  />
+        <Label 
+            x:Name="EmailWarning" Text="Email not Valid, use @shsu.edu email address" 
+            IsVisible="{Binding EmailWarningVisibility}" TextColor="Red" FontSize="Small" />
+
+
+        <Entry x:Name="PasswordEntry" Text="{Binding PasswordEntry}" Placeholder="Enter Password" 
+               IsPassword="True" 
+             />
+        <Label x:Name="PasswordWarning" Text="Password must be 8 characters long, with 1 number, 1 Uppercase, and 1 Lowercase"
+               IsVisible="{Binding GetPass}"
+               TextColor="Red" FontSize="Small"/>
+        
+        <Entry x:Name="NumberEntry"
+               Placeholder="Enter Number" 
+               
+               Text="{Binding NumberEntry}"/>
+       
+        <Label x:Name="NumberWarning" Text="" 
+               IsVisible="{Binding NumberWarningVisibility}" TextColor="Red" FontSize="Small" />
+        
+        <Entry x:Name="NameEntry"
+               Placeholder="Enter name"
+               
+               Text="{Binding NameEntry}" />
+        
+        <Label x:Name="NameWarning" Text="Please Enter a name" 
+               IsVisible="{Binding NameWarningVisibility}" TextColor="Red" FontSize="Small" />
+        
+        <DatePicker x:Name="DobEntry" ></DatePicker>
+        
+        <!--
+        <Picker x:Name="genderEntry" Title="Gender" ItemsSource="{Binding GenderList}" SelectedItem="{Binding GenderSelected}"/>
+        -->
+        <Entry x:Name="AddressEntry"
+               Placeholder="Enter Address" 
+               
+               Text="{Binding AddressEntry}" />
+
+        <Label x:Name="AddressWarning" Text="Please Enter an address" 
+               IsVisible="{Binding AddressWarningVisibility}" TextColor="Red" FontSize="Small" />
+        
+        <!--
+        <Picker x:Name="sexPrefEntry"
+               Title="Sexual Preference" ItemsSource="{Binding SpList}" SelectedItem="{Binding SpSelected}" />
+        -->
+        <!--
+        <Entry x:Name="hobbyEntry"
+               Placeholder="Enter Hobbies"/>
+        <Entry x:Name="majorEntry"
+               Placeholder="Enter Major"/>
+        <Entry x:Name="bioEntry"
+               Placeholder="Write something about yourself"/>
+        -->
+
+
+        <Button Text="Create" TextColor="White"  
+                    FontAttributes="Bold" FontSize="Large" HorizontalOptions="FillAndExpand"  
+                    BackgroundColor="#088da5"
+                Command="{Binding CreateCommand}" />
+        
+        
+
+        
+    </StackLayout>
+    
+</ContentPage>
