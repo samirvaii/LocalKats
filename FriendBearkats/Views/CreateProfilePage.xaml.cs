@@ -23,7 +23,7 @@ namespace FriendBearkats.Views
             vm.DisplayInvalidGenderPrompt += () => DisplayAlert("Error", "Please enter gender", "OK");
             vm.DisplayInvalidAddressPrompt += () => DisplayAlert("Error", "Please enter Address", "OK");
             vm.DisplayInvalidNumberPrompt += () => DisplayAlert("Error", "Number should be 10 strings long", "OK");
-            
+            vm.DisplayInvalidConfirmPrompt += () => DisplayAlert("Error", "Password not matched", "OK");
             InitializeComponent();
             
             /*

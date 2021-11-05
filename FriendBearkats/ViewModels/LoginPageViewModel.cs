@@ -11,6 +11,8 @@ using FriendBearkats.Services;
 
 using FriendBearkats;
 using Splat;
+using Xamarin.Essentials;
+using Newtonsoft.Json;
 
 namespace FriendBearkats.ViewModels
 {
@@ -18,6 +20,7 @@ namespace FriendBearkats.ViewModels
     {
         private IRoutingService _navigationService;
         public Action DisplayInvalidLoginPrompt;
+        public string WebAPIkey = "AIzaSyAVdr8V7916YDbQimGv3rxWLaLpnG6TpMs";
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         private string email;
         public string Email
@@ -56,28 +59,42 @@ namespace FriendBearkats.ViewModels
         public async void OnSignup()
         {
             await Shell.Current.GoToAsync(nameof(CreateProfilePage));
-            //await Shell.Current.GoToAsync("//login/registration");
+            //await Shell.Current.GoToAsync("//login/create");
         }
         public async  void OnSubmit()
         {
-            var details = await App.Database.GetPeopleAsync();
-            
-            var a1 = from x in details where x.Email == email && x.Password == password select x;
-            var n = a1.ToArray();
-            
-            //if (email != "rex@shsu.edu" || password != "secret")
-            if(n.Length == 0)
+
+            var authProvider = new FirebaseAuthprovider(new Firebase.Auth.FirebaseConfig(WebAPIkey));
+            try
             {
-                DisplayInvalidLoginPrompt();
-            }
-            else
-            {
-                //new AppShell();
-                //await Shell.Current.GoToAsync(nameof(ProfilePage));
+                var auth = await authProvider.SignInWithEmailAndPasswordAsync(Email, Password);
+                var content = await auth.GetFreshAuthAsync();
+                var serializedcontnet = JsonConvert.SerializeObject(content);
+                Preferences.Set("MyFirebaseRefreshToken", serializedcontnet);
                 await Shell.Current.GoToAsync(nameof(ProfilePage));
-                //await _navigationService.NavigateTo("///main/profile");
-                //new AppShell();
             }
+            catch (Exception e)
+            {
+                await App.Current.MainPage.DisplayAlert("Alert", "Invalid useremail or password", "OK");
+            }
+            /* var details = await App.Database.GetPeopleAsync();
+
+             var a1 = from x in details where x.Email == email && x.Password == password select x;
+             var n = a1.ToArray();
+
+             //if (email != "rex@shsu.edu" || password != "secret")
+             if(n.Length == 0)
+             {
+                 DisplayInvalidLoginPrompt();
+             }
+             else
+             {
+                 //new AppShell();
+                 //await Shell.Current.GoToAsync(nameof(ProfilePage));
+                 await Shell.Current.GoToAsync(nameof(ProfilePage));
+                 //await _navigationService.NavigateTo("//main/profile");
+                 //new AppShell();
+             }*/
         }
     }
 }

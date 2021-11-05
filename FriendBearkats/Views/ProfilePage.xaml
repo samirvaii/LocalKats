@@ -5,7 +5,9 @@
              Title="Profile">
 
     <ContentPage.Content>
+        
         <StackLayout>
+            <Label Text="PROFILE PAGE"/>
             <StackLayout Orientation="Horizontal">
                 <CollectionView x:Name="myCollectionView">
                     <CollectionView.ItemTemplate>

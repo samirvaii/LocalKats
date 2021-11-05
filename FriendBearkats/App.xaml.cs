@@ -1,4 +1,8 @@
-﻿using System;
+﻿using FriendBearkats.Services;
+using FriendBearkats.ViewModels;
+using FriendBearkats.Views;
+using Splat;
+using System;
 using System.IO;
 using Xamarin.Forms;
 
@@ -27,7 +31,17 @@ namespace FriendBearkats
             MainPage = new AppShell();
            
         }
-
+        private void InitializeDi()
+        {
+            // Services
+            Locator.CurrentMutable.RegisterLazySingleton<IRoutingService>(() => new ShellRoutingService());
+            // ViewModels
+            Locator.CurrentMutable.Register(() => new LoginPageViewModel());
+            
+            Locator.CurrentMutable.Register(() => new CreatePageViewModel());
+            Locator.CurrentMutable.Register(() => new ProfilePage());
+            Locator.CurrentMutable.Register(() => new FindPage());
+        }
         protected override void OnStart()
         {
         }

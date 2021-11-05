@@ -14,10 +14,12 @@ namespace FriendBearkats
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
-           
-            Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
+            //Routing.RegisterRoute("profile", typeof(ProfilePage));
+            //Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
             Routing.RegisterRoute(nameof(CreateProfilePage), typeof(CreateProfilePage));
+            Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
             Routing.RegisterRoute(nameof(FindPage), typeof(FindPage));
+            //Routing.RegisterRoute("profile/find", typeof(FindPage));
             //Routing.RegisterRoute("create", typeof(CreateProfilePage));
             //Routing.RegisterRoute("main/login", typeof(LoginPage));
             //Routing.RegisterRoute("main/profile/find", typeof(FindPage));

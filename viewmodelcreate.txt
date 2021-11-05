@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Linq;
@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using FriendBearkats.Services;
 using Splat;
-using Firebase.Auth;
 
 namespace FriendBearkats.ViewModels
 {
@@ -23,7 +22,6 @@ namespace FriendBearkats.ViewModels
         public Action DisplayInvalidGenderPrompt;
         public Action DisplayInvalidNumberPrompt;
         public Action DisplayInvalidAddressPrompt;
-        public Action DisplayInvalidConfirmPrompt;
 
         
         private IRoutingService _navigationService;
@@ -38,7 +36,6 @@ namespace FriendBearkats.ViewModels
 
         private string emailentry;
         private string passwordentry;
-        private string passwordconfirm ;
         private string numberentry;
         private string nameentry;
         private string addressentry;
@@ -49,9 +46,7 @@ namespace FriendBearkats.ViewModels
         
         private bool emailwarningvisibility = false;
         private bool passwordwarningvisibility = false;
-        private bool confirmwarningvisibility = false;
         private bool numberwarningvisibility = false;
-        
         private Regex emailRegex = new Regex(emailPattern, RegexOptions.IgnoreCase);
         private Regex passRegex = new Regex(passPattern);
         private Regex hasNumber = new Regex(@"[0-9]+");
@@ -72,8 +67,6 @@ namespace FriendBearkats.ViewModels
                     EmailWarningVisibility = true;
                 else
                     EmailWarningVisibility = false;
-
-               
             }
         }
         
@@ -91,8 +84,6 @@ namespace FriendBearkats.ViewModels
         }
 
         
-      
-        
         //----------------------------------
         
         
@@ -104,61 +95,38 @@ namespace FriendBearkats.ViewModels
                 passwordentry = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("PasswordEntry"));
                 //if (!passRegex.IsMatch(passwordentry))
-                
-                if (!hasNumber.IsMatch(PasswordEntry) || !hasLowerChar.IsMatch(PasswordEntry) ||
+                if (  hasNumber.IsMatch(PasswordEntry)
+                && hasLowerChar.IsMatch(PasswordEntry)
+                && hasMinimum8Chars.IsMatch(PasswordEntry)
+                && hasUpperChar.IsMatch(PasswordEntry))  
+                { SetPasswordWarningVisibility(true); }
+                else
+                { SetPasswordWarningVisibility(false); }
+                /*if (!hasNumber.IsMatch(PasswordEntry) || !hasLowerChar.IsMatch(PasswordEntry) ||
                     !hasMinimum8Chars.IsMatch(PasswordEntry) || !hasUpperChar.IsMatch(PasswordEntry))
                    PasswordWarningVisibility = true;
                 else
-                    PasswordWarningVisibility = false;
+                    PasswordWarningVisibility = false;*/
             }
         }
 
-        public bool PasswordWarningVisibility
+        public bool GetPass
         {
-            get { return passwordwarningvisibility; }
-            set
-            {
-                if (!hasNumber.IsMatch(PasswordEntry) || !hasLowerChar.IsMatch(PasswordEntry) ||
-                   !hasMinimum8Chars.IsMatch(PasswordEntry) || !hasUpperChar.IsMatch(PasswordEntry))
-                    passwordwarningvisibility =true;
-                else
-                    passwordwarningvisibility = false;
-
-                PropertyChanged(this, new PropertyChangedEventArgs("PasswordWarningVisibility"));
-            }
+            get { return GetPasswordWarningVisibility(); }
         }
+        public bool GetPasswordWarningVisibility()
+        { return passwordwarningvisibility; }
 
-        public string PasswordConfirm
+        public void SetPasswordWarningVisibility(bool value)
         {
-            get { return passwordconfirm; }
-            set
-            {
-                passwordconfirm = value;
-                PropertyChanged(this, new PropertyChangedEventArgs("PasswordConfirm"));
-
-                if (PasswordConfirm != PasswordEntry)
-                    ConfirmWarningVisibility = true;
-                else
-                    ConfirmWarningVisibility = false;
-            }
+            /*passwordwarningvisibility = !hasNumber.IsMatch(PasswordEntry) || !hasLowerChar.IsMatch(PasswordEntry) ||
+                !hasMinimum8Chars.IsMatch(PasswordEntry) || !hasUpperChar.IsMatch(PasswordEntry);*/
+            passwordwarningvisibility = passRegex.IsMatch(PasswordEntry);
+            PropertyChanged(this, new PropertyChangedEventArgs("PasswordWarningVisiblity"));
         }
-
-        public bool ConfirmWarningVisibility
-        {
-            get { return confirmwarningvisibility; }
-            set
-            {
-                if (PasswordConfirm != PasswordEntry)
-                    ConfirmWarningVisibility = true;
-                else
-                    ConfirmWarningVisibility = false;
-                PropertyChanged(this, new PropertyChangedEventArgs("ConfirmWarningVisbility"));
-            }
-        }
-       
         //--------------------------------------------------------------------------------------
 
-        /*
+
         public string NumberEntry
         {
             get { return numberentry; }
@@ -237,8 +205,6 @@ namespace FriendBearkats.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs("AddressWarningVisiblity"));
             }
         }
-
-        */
         //-----------------------------------------------------------------------------------------------------
         public ICommand CreateCommand { protected set; get; }
 
@@ -247,7 +213,14 @@ namespace FriendBearkats.ViewModels
             CreateCommand = new Command(OnCreate);
             
             _navigationService = navigationService ?? Locator.Current.GetService<IRoutingService>();
-          
+            /* GenderList.Add("Male");
+             GenderList.Add("Female");
+             GenderList.Add("Other");
+
+             SpList.Add("Male");
+             SpList.Add("Female");
+             SpList.Add("Both");
+             SpList.Add("NonBinary");*/
 
         }
         /*
@@ -277,28 +250,23 @@ namespace FriendBearkats.ViewModels
        
         public async void OnCreate()
         {
-            if ( /*!string.IsNullOrEmpty(NameEntry) &&
+            if (!string.IsNullOrEmpty(NameEntry) &&
                 !string.IsNullOrEmpty(AddressEntry) &&
                 NumberEntry.Length == 10 && !string.IsNullOrEmpty(NumberEntry)
-                && */emailRegex.IsMatch(EmailEntry)
-                && !string.IsNullOrEmpty(EmailEntry)
-                && !string.IsNullOrEmpty(PasswordEntry)
-                && !string.IsNullOrEmpty(PasswordConfirm)
+                && emailRegex.IsMatch(EmailEntry)
                 && hasNumber.IsMatch(PasswordEntry)
                 && hasLowerChar.IsMatch(PasswordEntry)
                 && hasMinimum8Chars.IsMatch(PasswordEntry)
-                && hasUpperChar.IsMatch(PasswordEntry)
-                && PasswordConfirm== PasswordEntry)
-
+                && hasUpperChar.IsMatch(PasswordEntry))
             {
                 try
-                {/*
+                {
                     await App.Database.SavePersonAsync(new Person
                     {
-                        //Name = NameEntry,
+                        Name = NameEntry,
 
 
-                        //Email = EmailEntry,
+                        Email = EmailEntry,
                         Password = PasswordEntry,
 
                         Address = AddressEntry,
@@ -307,14 +275,7 @@ namespace FriendBearkats.ViewModels
                         //Major = majorEntry.Text, 
                         //Bio = bioEntry.Text, 
                         //Hobbies = hobbyEntry.Text
-                    });*/
-                    var authProvider = new FirebaseAuthProvider(new FirebaseConfig(WebAPIkey));
-                    var auth = await authProvider.CreateUserWithEmailAndPasswordAsync(EmailEntry, PasswordEntry);
-                    string gettoken = auth.FirebaseToken;
-                    await authProvider.UpdateProfileAsync(auth.FirebaseToken, EmailEntry, "");
-                    await App.Current.MainPage.DisplayAlert("Alert", "Your acoount is succesfully created. Please verify your account using OTP(One Time Password)", "Ok");
-
-
+                    });
                     await Shell.Current.GoToAsync(nameof(LoginPage));
                     
                 }
@@ -322,14 +283,12 @@ namespace FriendBearkats.ViewModels
                 {
                     if (string.IsNullOrEmpty(emailentry))
                         DisplayInvalidEmailPrompt();
-
                     else if (!emailRegex.IsMatch(EmailEntry))
                         DisplayInvalidEmailPrompt();
 
-
-                    /*else if (string.IsNullOrWhiteSpace(NameEntry))
+                    else if (string.IsNullOrWhiteSpace(NameEntry))
                         DisplayInvalidNamePrompt();
-                    */
+
                     else if (string.IsNullOrWhiteSpace(PasswordEntry)
                         || !emailRegex.IsMatch(EmailEntry)
                     || !hasNumber.IsMatch(PasswordEntry)
@@ -337,16 +296,11 @@ namespace FriendBearkats.ViewModels
                     || !hasMinimum8Chars.IsMatch(PasswordEntry)
                     || !hasUpperChar.IsMatch(PasswordEntry))
                         DisplayInvalidPasswordPrompt();
-                    else if (string.IsNullOrWhiteSpace(PasswordConfirm)
-                        || PasswordConfirm != PasswordEntry)
-                        DisplayInvalidNumberPrompt();
-                        
-                    /*
+
                     else if (string.IsNullOrWhiteSpace(AddressEntry))
                         DisplayInvalidAddressPrompt();
                     else if (NumberEntry.Length != 10)
                         DisplayInvalidNumberPrompt();
-                    */
                 }
             }
             else
@@ -355,10 +309,10 @@ namespace FriendBearkats.ViewModels
                     DisplayInvalidEmailPrompt();
                 else if (!emailRegex.IsMatch(EmailEntry))
                     DisplayInvalidEmailPrompt();
-                /*
+
                 else if (string.IsNullOrWhiteSpace(NameEntry))
                     DisplayInvalidNamePrompt();
-                */
+
                 else if (string.IsNullOrWhiteSpace(PasswordEntry)
                     || !emailRegex.IsMatch(EmailEntry)
                 || !hasNumber.IsMatch(PasswordEntry)
@@ -366,12 +320,11 @@ namespace FriendBearkats.ViewModels
                 || !hasMinimum8Chars.IsMatch(PasswordEntry)
                 || !hasUpperChar.IsMatch(PasswordEntry))
                     DisplayInvalidPasswordPrompt();
-                /*
+
                 else if (string.IsNullOrWhiteSpace(AddressEntry))
                     DisplayInvalidAddressPrompt();
                 else if (NumberEntry.Length != 10)
                     DisplayInvalidNumberPrompt();
-                */
             }
         }
     }

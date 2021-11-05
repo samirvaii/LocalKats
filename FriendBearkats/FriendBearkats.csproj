@@ -7,6 +7,10 @@
 
   <ItemGroup>
     <PackageReference Include="Abp" Version="6.5.0" />
+    <PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
+    <PackageReference Include="FirebaseDatabase.net" Version="4.0.6" />
+    <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="Splat" Version="13.1.30" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />

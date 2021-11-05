@@ -10,7 +10,7 @@
     
         https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/shell/
     -->
-    <TabBar>
+    
         <!--
         <ShellContent Title="Home"
                       Icon="icon_feed.png"
@@ -19,25 +19,28 @@
                       Icon="icon_about.png"
                       ContentTemplate="{DataTemplate views:ProfilePage}" />
         -->
-        <ShellContent Title="Login"
-                      Icon="icon_login.png"
-                      Route="login"
+        <ShellContent 
+                      Title="Login"
                       ContentTemplate="{DataTemplate views:LoginPage}" />
+        
+        
 
-        <ShellContent Route="Create"
-                      Title="Create"
-                      ContentTemplate="{DataTemplate views:CreateProfilePage}"/>
-
-
-    </TabBar>
-
-    <FlyoutItem Route="main"
+   
+    <!--
+    <TabBar Route="main"
                 FlyoutDisplayOptions="AsMultipleItems" IsTabStop="False">
         <ShellContent Route="profile"
                       IsTabStop="False"
                       ContentTemplate="{DataTemplate views:ProfilePage}"
                       Title="Profile"/>
-    </FlyoutItem>
+        <ShellContent  Route="find"
+                       Title="Find"/>
+
+
+    </TabBar>
+    -->
+    
+    
     <MenuItem Text="Logout"
               Command="{Binding ExecuteLogout}"/>
 
